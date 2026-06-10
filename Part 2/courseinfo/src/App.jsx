@@ -18,10 +18,15 @@ const Content = (props) => {
   )
 }
 const Course=(props) => {
+  let totalAmount = 0
+  props.course.parts.forEach(part => {
+    totalAmount += part.exercises
+  })
   return (
     <div>
       <Header courseName={props.course.name} />
       <Content parts={props.course.parts} />
+      <p><strong>total of {totalAmount} exercises</strong></p>
     </div>
   )
 }
@@ -44,6 +49,11 @@ const App = () => {
         id: 3,
         name: 'State of a component',
         exercises: 14
+      },
+      {
+        id: 4,
+        name: 'Redux',
+        exercises: 11
       }
     ]
   }
