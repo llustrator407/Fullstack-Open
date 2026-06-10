@@ -18,10 +18,7 @@ const Content = (props) => {
   )
 }
 const Course=(props) => {
-  let totalAmount = 0
-  props.course.parts.forEach(part => {
-    totalAmount += part.exercises
-  })
+  let totalAmount = props.course.parts.reduce((s, p) => s + p.exercises, 0)
   return (
     <div>
       <Header courseName={props.course.name} />
