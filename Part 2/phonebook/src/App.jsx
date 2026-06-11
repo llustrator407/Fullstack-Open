@@ -22,11 +22,11 @@ const PersonForm=(props)=>{
     </form>
   )
 }
-const Persons=({persons})=>{
+const Persons=({persons, onDelete})=>{
   return (
     <div>
       {persons.map(person=> 
-        <p key={person.id}>{person.name} {person.number}</p>
+        <p key={person.id}>{person.name} {person.number} <button onClick={()=>onDelete(person.id,person.name)}>delete</button></p>
       )}
     </div>
   )
@@ -65,7 +65,21 @@ const App=()=>{
         setNewNumber('')
       })
   }
-
+  const deletePersonOf=(id,name)=>{
+    if(window.confirm(`Delete ${name} ?`)){
+      personService
+        .remove(id)
+        .then(()=>{
+          let remainingPersons=[]
+          for(let i=0; i<persons.length; i++){
+            if(persons[i].id!==id){
+              remainingPersons.push(persons[i])
+            }
+          }
+          setPersons(remainingPersons)
+        })
+    }
+  }
   const handleNameChange=(event)=>{
     setNewName(event.target.value)
   }
@@ -95,7 +109,7 @@ const App=()=>{
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-        <Persons persons={objectsToShow}/>
+        <Persons persons={objectsToShow} onDelete={deletePersonOf}/>
     </div>
   )
 }
