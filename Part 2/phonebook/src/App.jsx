@@ -45,9 +45,33 @@ const App=()=>{
   },[])
   const addPerson=(event)=>{
     event.preventDefault()
-    const duplicate = persons.some(person => person.name === newName)
-    if (duplicate){
-      alert(`${newName} is already added to phonebook`)
+    let existingPerson=null
+    for(let i=0; i<persons.length; i++){
+      if(persons[i].name.toLowerCase()===newName.toLowerCase()){
+        existingPerson=persons[i]
+        break
+      }
+    }
+    if(existingPerson){
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        const changedPerson={...existingPerson, number:newNumber}
+        
+        personService
+          .update(existingPerson.id,changedPerson)
+          .then(returnedPerson=>{
+            let updatedPersons=[]
+            for(let i=0; i<persons.length; i++){
+              if(persons[i].id===existingPerson.id){
+                updatedPersons.push(returnedPerson)
+              }else{
+                updatedPersons.push(persons[i])
+              }
+            }
+            setPersons(updatedPersons)
+            setNewName('')
+            setNewNumber('')
+          })
+      }
       return
     }
     const personObject = {
