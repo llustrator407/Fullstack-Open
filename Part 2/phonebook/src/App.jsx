@@ -55,12 +55,15 @@ const App=()=>{
       number: newNumber,
       id: persons.length+1
     }
-    const updatedPersons=[...persons]
-    updatedPersons.push(personObject)
-
-    setPersons(updatedPersons)
-    setNewName('')
-    setNewNumber('')
+    axios
+      .post('http://localhost:3001/persons',personObject)
+      .then(response=>{
+        const updatedPersons=[...persons]
+        updatedPersons.push(response.data)
+        setPersons(updatedPersons)
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const handleNameChange=(event)=>{
