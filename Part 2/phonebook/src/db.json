@@ -29,6 +29,11 @@
       "name": "dhruv",
       "number": "8097914590",
       "id": "dgAYbCKFUwo"
+    },
+    {
+      "name": "dave",
+      "number": "0505",
+      "id": "J2LQ4vvyWM4"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
