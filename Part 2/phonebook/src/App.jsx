@@ -1,5 +1,24 @@
 import { useState, useEffect } from 'react'
 import personService from './persons.js'
+const Notification=({message})=>{
+  if(message===null){
+    return null
+  }
+  const notificationStyle={
+    color:'green',
+    background:'lightgrey',
+    fontSize:20,
+    borderStyle:'solid',
+    borderRadius:5,
+    padding:10,
+    marginBottom:10
+  }
+  return (
+    <div style={notificationStyle}>
+      {message}
+    </div>
+  )
+}
 const Filter=({value,onChange})=>{
   return (
     <div>
@@ -36,6 +55,7 @@ const App=()=>{
   const [newName,setNewName]=useState('')
   const [newNumber, setNewNumber]=useState('')
   const [searchFilter,setSearchFilter]=useState('')
+  const [successMessage,setSuccessMessage]=useState(null)
   useEffect(()=>{
     personService
       .getAll()
@@ -68,6 +88,10 @@ const App=()=>{
               }
             }
             setPersons(updatedPersons)
+            setSuccessMessage(`Changed number for ${returnedPerson.name}`)
+            setTimeout(()=>{
+              setSuccessMessage(null)
+            },3000)
             setNewName('')
             setNewNumber('')
           })
@@ -85,6 +109,10 @@ const App=()=>{
         const updatedPersons=[...persons]
         updatedPersons.push(returnedPerson)
         setPersons(updatedPersons)
+        setSuccessMessage(`Added ${returnedPerson.name}`)
+        setTimeout(()=>{
+          setSuccessMessage(null)
+        },3000)
         setNewName('')
         setNewNumber('')
       })
@@ -123,6 +151,7 @@ const App=()=>{
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter value={searchFilter} onChange={handleFilterChange}/>
         <h2>Add a new number</h2>
         <PersonForm 
