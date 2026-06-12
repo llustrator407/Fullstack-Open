@@ -29,7 +29,7 @@ const App=()=>{
       return (
         <div>
           {countriesToShow.map(c=> 
-            <p key={c.name.common}>{c.name.common}</p>
+            <p key={c.name.common}>{c.name.common}<button onClick={()=>setSearchQuery(c.name.common)}>show</button></p>
           )}
         </div>
       )
