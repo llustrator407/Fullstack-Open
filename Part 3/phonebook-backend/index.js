@@ -27,6 +27,7 @@ let persons=[
     number: "39-23-6423122"
   }
 ]
+app.use(express.json())
 app.get('/api/persons',(request,response)=>{
   response.json(persons)
 })
@@ -63,6 +64,17 @@ app.delete('/api/persons/:id',(request,response)=>{
   }
   persons=remainingPersons
   response.status(204).end()
+})
+app.post('/api/persons',(request,response)=>{
+  const body=request.body
+  const randomId=Math.floor(Math.random()*10000000)
+  const person={
+    id:String(randomId),
+    name:body.name,
+    number:body.number
+  }
+  persons.push(person)
+  response.json(person)
 })
 const PORT=3001
 app.listen(PORT,()=>{
