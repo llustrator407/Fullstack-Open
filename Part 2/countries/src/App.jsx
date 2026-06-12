@@ -1,5 +1,52 @@
 import { useState,useEffect } from 'react'
 import axios from 'axios'
+const CountryView=({country})=>{
+  const [weather,setWeather]=useState(null)
+  const api_key=import.meta.env.VITE_WEATHER_KEY
+  const capital=country.capital ? country.capital[0] : null
+  useEffect(()=>{
+    if(capital){
+      axios
+        .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`)
+        .then(response=>{
+          setWeather(response.data)
+        })
+    }
+  },[capital,api_key])
+  let languagesList=[]
+  for(let key in country.languages){
+    languagesList.push(country.languages[key])
+  }
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <p>capital {capital || 'N/A'}</p>
+      <p>area {country.area}</p>
+      <h3>Languages</h3>
+      <ul>
+        {languagesList.map(lang=> 
+          <li key={lang}>{lang}</li>
+        )}
+      </ul>
+      <img 
+        src={country.flags.png} 
+        alt={`Flag of ${country.name.common}`} 
+        style={{width:150}}
+      />
+      {weather && (
+        <div>
+          <h2>Weather in {capital}</h2>
+          <p>Temperature {weather.main.temp} Celsius</p>
+          <img 
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} 
+            alt={weather.weather[0].description}
+          />
+          <p>Wind {weather.wind.speed} m/s</p>
+        </div>
+      )}
+    </div>
+  )
+}
 const App=()=>{
   const [countries,setCountries]=useState([])
   const [searchQuery,setSearchQuery]=useState('')
@@ -35,30 +82,7 @@ const App=()=>{
       )
     }
     if(countriesToShow.length===1){
-      const country=countriesToShow[0]
-      let languagesList=[]
-      for(let key in country.languages){
-        languagesList.push(country.languages[key])
-      }
-      return (
-        <div>
-          <h1>{country.name.common}</h1>
-          <p>capital {country.capital ? country.capital[0] : 'N/A'}</p>
-          <p>area {country.area}</p>
-          
-          <h3>Languages</h3>
-          <ul>
-            {languagesList.map(lang=> 
-              <li key={lang}>{lang}</li>
-            )}
-          </ul>
-          <img 
-            src={country.flags.png} 
-            alt={`Flag of ${country.name.common}`} 
-            style={{width:150}}
-          />
-        </div>
-      )
+      return <CountryView country={countriesToShow[0]} />
     }
     return null
   }
