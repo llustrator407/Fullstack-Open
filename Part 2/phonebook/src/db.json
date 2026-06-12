@@ -14,16 +14,6 @@
       "name": "Arto Hellas",
       "number": "42-69-612391",
       "id": "pGbq6Q5evaM"
-    },
-    {
-      "name": "dhruv",
-      "number": "9231234",
-      "id": "k6fdBQc6QXk"
-    },
-    {
-      "name": "dave",
-      "number": "2314",
-      "id": "w1jecx-jrqU"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

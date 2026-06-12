@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import personService from './persons.js'
-const Notification=({message})=>{
+const Notification=({message,isError})=>{
   if(message===null){
     return null
   }
   const notificationStyle={
-    color:'green',
+    color:isError ? 'red' : 'green',
     background:'lightgrey',
     fontSize:20,
     borderStyle:'solid',
@@ -55,7 +55,7 @@ const App=()=>{
   const [newName,setNewName]=useState('')
   const [newNumber, setNewNumber]=useState('')
   const [searchFilter,setSearchFilter]=useState('')
-  const [successMessage,setSuccessMessage]=useState(null)
+  const [notification,setNotification]=useState({text:null,isError:false})
   useEffect(()=>{
     personService
       .getAll()
@@ -88,10 +88,28 @@ const App=()=>{
               }
             }
             setPersons(updatedPersons)
-            setSuccessMessage(`Changed number for ${returnedPerson.name}`)
+            setNotification({text:`Changed number for ${returnedPerson.name}`,isError:false})
             setTimeout(()=>{
-              setSuccessMessage(null)
+              setNotification({text:null,isError:false})
             },3000)
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(error=>{
+            setNotification({
+              text:`Information of ${existingPerson.name} has already been removed from server`,
+              isError:true
+            })
+            setTimeout(()=>{
+              setNotification({text:null,isError:false})
+            },3000)
+            let remainingPersons=[]
+            for(let i=0; i<persons.length; i++){
+              if(persons[i].id!==existingPerson.id){
+                remainingPersons.push(persons[i])
+              }
+            }
+            setPersons(remainingPersons)
             setNewName('')
             setNewNumber('')
           })
@@ -109,9 +127,9 @@ const App=()=>{
         const updatedPersons=[...persons]
         updatedPersons.push(returnedPerson)
         setPersons(updatedPersons)
-        setSuccessMessage(`Added ${returnedPerson.name}`)
+        setNotification({text:`Added ${returnedPerson.name}`,isError:false})
         setTimeout(()=>{
-          setSuccessMessage(null)
+          setNotification({text:null,isError:false})
         },3000)
         setNewName('')
         setNewNumber('')
@@ -151,7 +169,7 @@ const App=()=>{
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={notification.text} isError={notification.isError}/>
       <Filter value={searchFilter} onChange={handleFilterChange}/>
         <h2>Add a new number</h2>
         <PersonForm 
