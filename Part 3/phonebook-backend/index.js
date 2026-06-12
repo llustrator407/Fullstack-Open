@@ -53,6 +53,17 @@ app.get('/api/persons/:id',(request,response)=>{
     response.status(404).end()
   }
 })
+app.delete('/api/persons/:id',(request,response)=>{
+  const id=request.params.id
+  let remainingPersons=[]
+  for(let i=0; i<persons.length; i++){
+    if(persons[i].id!==id){
+      remainingPersons.push(persons[i])
+    }
+  }
+  persons=remainingPersons
+  response.status(204).end()
+})
 const PORT=3001
 app.listen(PORT,()=>{
   console.log(`Server running on port ${PORT}`)
