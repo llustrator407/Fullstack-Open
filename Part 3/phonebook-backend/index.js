@@ -1,7 +1,13 @@
 const express=require('express')
 const morgan=require('morgan')
 const app=express()
-app.use(morgan('tiny'))
+morgan.token('post-body',(request)=>{
+  if(request.method==='POST'){
+    return JSON.stringify(request.body)
+  }
+  return ''
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-body'))
 let persons=[
   {
     id: "1",
