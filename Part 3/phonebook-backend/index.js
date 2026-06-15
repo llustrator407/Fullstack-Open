@@ -15,31 +15,32 @@ morgan.token('post-body',(request)=>{
   return ''
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-body'))
-app.get('/api/persons',(request,response)=>{
+app.get('/api/persons',(request,response,next)=>{
   Person.find({}).then(persons => {
     response.json(persons)
   })  
+  .catch(error => next(error))
 })
-app.get('/info',(request,response)=>{
+app.get('/info',(request,response,next)=>{
   Person.countDocuments({})
     .then(count => {
       response.send(`<p>Phonebook has info for ${count} people</p><p>${new Date()}</p>`)
     })
     .catch(error => next(error))
 })
-app.get('/api/persons/:id',(request,response)=>{
+app.get('/api/persons/:id',(request,response,next)=>{
   Person.findById(request.params.id)
     .then(person => {
       person ? response.json(person) : response.status(404).end()
     })
     .catch(error => next(error))
 })
-app.delete('/api/persons/:id',(request,response)=>{
+app.delete('/api/persons/:id',(request,response,next)=>{
   Person.findByIdAndDelete(request.params.id)
-    .then(() => response.status(204).end())
+    .then(result =>{response.status(204).end()})
     .catch(error => next(error))
 })
-app.post('/api/persons',(request,response)=>{
+app.post('/api/persons',(request,response,next)=>{
   const body=request.body
   if(!body.name || !body.number){
     return response.status(400).json({
@@ -57,6 +58,17 @@ app.post('/api/persons',(request,response)=>{
 app.get((req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
+const errorHandler = (error,request,response,next) => {
+  console.error(error.message)
+  if(error.name==='CastError'){
+    return response.status(400).send({error:'malformatted id'})
+  } 
+  else if(error.name==='ValidationError'){
+    return response.status(400).json({error: error.message})
+  }
+  next(error) 
+}
+app.use(errorHandler)
 const PORT=process.env.PORT||3001
 app.listen(PORT,()=>{
   console.log(`Server running on port ${PORT}`)
