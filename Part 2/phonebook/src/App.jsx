@@ -134,6 +134,15 @@ const App=()=>{
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => {
+        setNotification({
+          text: error.response.data.error,
+          isError: true
+        })
+        setTimeout(() => {
+          setNotification({text: null, isError: false})
+        }, 5000)
+      })
   }
   const deletePersonOf=(id,name)=>{
     if(window.confirm(`Delete ${name} ?`)){
