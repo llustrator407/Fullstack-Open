@@ -55,9 +55,6 @@ app.post('/api/persons',(request,response,next)=>{
     .then(savedPerson => response.json(savedPerson))
     .catch(error => next(error))
 })
-app.get((req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
 app.put('/api/persons/:id', (request,response,next) => {
   const {name, number} = request.body
   Person.findByIdAndUpdate(
@@ -80,6 +77,12 @@ const errorHandler = (error,request,response,next) => {
   }
   next(error) 
 }
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
 app.use(errorHandler)
 const PORT=process.env.PORT||3001
 app.listen(PORT,()=>{
