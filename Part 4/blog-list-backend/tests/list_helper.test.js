@@ -1,6 +1,11 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
+test('dummy returns one', ()=>{
+  const blogs=[]
+  const result=listHelper.dummy(blogs)
+  assert.strictEqual(result, 1)
+})
 describe('total likes', () => {
   test('of empty list is zero', () => {
     assert.strictEqual(listHelper.totalLikes([]), 0)
@@ -25,5 +30,19 @@ describe('total likes', () => {
       { likes: 7 }
     ]
     assert.strictEqual(listHelper.totalLikes(blogs), 22)
+  })
+})
+describe('favorite blog', () => {
+  const blogs =[
+    { title: 'Blog A', likes: 5 },
+    { title: 'Blog B', likes: 12 },
+    { title: 'Blog C', likes: 7 }
+  ]
+  test('returns the blog with the most likes', () => {
+    const result = listHelper.favoriteBlog(blogs)
+    assert.deepStrictEqual(result, { title: 'Blog B', likes: 12 })
+  })
+  test('returns null if the list is empty', () => {
+    assert.strictEqual(listHelper.favoriteBlog([]), null)
   })
 })
