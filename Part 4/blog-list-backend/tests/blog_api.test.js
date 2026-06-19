@@ -1,4 +1,5 @@
 const {test, describe, beforeEach, after} = require('node:test')
+const assert=require('node:assert')
 const supertest=require('supertest')
 const mongoose=require('mongoose')
 const helper = require('../utils/list_helper')
@@ -17,4 +18,9 @@ test('blogs are returned as json', async () => {
 })
 after(async () => {
   await mongoose.connection.close()
+})
+test('blog posts have a unique identifier property named id', async()=>{
+  const response = await api.get('/api/blogs')
+  assert.ok(response.body[0].id, 'The blog should have an id property')
+  assert.strictEqual(response.body[0]._id, undefined)
 })
